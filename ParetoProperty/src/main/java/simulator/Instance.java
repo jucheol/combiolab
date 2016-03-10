@@ -66,7 +66,7 @@ public class Instance {
 	}
 	
 	public static void main(String[] args) throws MissingTaxonException {
-		Instance test = new Instance(2, 3, 10);
+		Instance test = new Instance(2, 3, 2);
 		test.showInstance();
 	}
 }
