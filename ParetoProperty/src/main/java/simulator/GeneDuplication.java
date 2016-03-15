@@ -7,7 +7,6 @@ import java.util.Set;
 import jebl.evolution.taxa.MissingTaxonException;
 import jebl.evolution.taxa.Taxon;
 import jebl.evolution.trees.RootedTree;
-import jebl.evolution.trees.Utils;
 import jebl.moon.RootedSplits;
 
 public class GeneDuplication extends GeneTreeParsimony {
@@ -36,7 +35,7 @@ public class GeneDuplication extends GeneTreeParsimony {
 		Instance inst = new Instance(2, 3, 10);
 		inst.showInstance();
 		GeneDuplication solver = new GeneDuplication(inst.getIncomProfile());
-		solver.solveDynamicProgram(true);
-		System.out.println(Utils.asText(solver.getSolution()));
+		solver.runDynamicProgram(true);
+		solver.showResults();
 	}
 }

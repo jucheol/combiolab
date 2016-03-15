@@ -3,7 +3,6 @@ package simulator;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -123,7 +122,7 @@ public abstract class GeneTreeParsimony {
 		}
 	}
 
-	public void solveDynamicProgram(boolean coPareto) {
+	public void runDynamicProgram(boolean coPareto) {
 		this.pareto = coPareto;
 		minimal = subCost(leaves);
 		setSolutionClusters(leaves);		
@@ -139,6 +138,7 @@ public abstract class GeneTreeParsimony {
 	}
 	
 	public void showResults() {
+		System.out.println("==================== Solution Tree ====================");
 		System.out.println("Species gene tree cost: " + minimal.iterator().next().getCost());
 		System.out.println(Utils.asText(solutionTree));
 	}

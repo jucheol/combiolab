@@ -218,7 +218,7 @@ public class MyUtils {
 		return cost;
 	}
 
-	public static int GeneDuplicationCost(List<RootedTree> gTrees, RootedTree sTree) throws MissingTaxonException {
+	public static int GeneDuplicationCost(RootedTree[] gTrees, RootedTree sTree) throws MissingTaxonException {
 		int rtn = 0;
 		for (RootedTree gTree : gTrees) {
 			rtn += GeneDuplicationCost(gTree, sTree);
