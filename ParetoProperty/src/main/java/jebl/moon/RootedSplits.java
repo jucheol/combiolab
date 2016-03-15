@@ -1,23 +1,33 @@
 package jebl.moon;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import jebl.evolution.taxa.Taxon;
 
 public class RootedSplits {
-	private Set<Set<Taxon>> splits;
+	private List<Set<Taxon>> splits;
 	
 	public RootedSplits() {
-		splits = new HashSet<Set<Taxon>>();
+		splits = new LinkedList<Set<Taxon>>();
 	}
 	
 	public void addSplit(Set<Taxon> split) {
 		splits.add(split);
 	}
 	
-	public Set<Set<Taxon>> getSplits() {
+	public List<Set<Taxon>> getSplits() {
 		return splits;
+	}
+	
+	public int getSize() {
+		return splits.size();
+	}
+	
+	public Set<Taxon> getSplit(int i) {
+		return splits.get(i %  splits.size());
 	}
 	
 	public Set<Taxon> getUnion() {
