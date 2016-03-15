@@ -17,7 +17,6 @@ import jebl.moon.RootedTreeFromClusterSplits;
 import jebl.moon.SetOps;
 
 public abstract class GeneTreeParsimony {
-	private boolean pareto;
 	private Set<RootedSplitsCost> minimal;
 	private Set<Taxon> leaves;
 	private RootedTree solutionTree;
@@ -29,55 +28,44 @@ public abstract class GeneTreeParsimony {
 
 	protected Set<RootedSplitsCost> subCost(Set<Taxon> Z) {
 		Set<RootedSplitsCost> rtn = null;
-		if (Z.size() > 1) {
-			if (!subOptimals.containsKey(Z)) {
-				subOptimals.put(Z, new HashSet<RootedSplitsCost>());
-				Set<Set<Taxon>> pZ = null;
-				if (pareto) {
-					pZ = SetOps.powerset(Z);
-					pZ.remove(Collections.EMPTY_SET);
-					pZ.remove(Z);		
+		if (Z.size() > 1 && !subOptimals.containsKey(Z)) {
+			subOptimals.put(Z, new HashSet<RootedSplitsCost>());			
+			Set<Set<Taxon>> pZ = SetOps.powerset(Z);
+			pZ.remove(Collections.EMPTY_SET);
+			pZ.remove(Z);
+			int costZ, min = Integer.MAX_VALUE;
+			Set<RootedSplitsCost> tempOptimals = new HashSet<RootedSplitsCost>();
+			while (pZ.size() > 0) {
+				Set<Taxon> X = new HashSet<Taxon>(pZ.iterator().next());
+				Set<Taxon> Y = new HashSet<Taxon>(Z);
+				Y.removeAll(X);
+				pZ.remove(X);
+				pZ.remove(Y);
+				int costX = 0, costY = 0;
+				if (subCost(X) != null) {
+					costX = subCost(X).iterator().next().getCost();
 				}
-				else {
-					pZ = new HashSet<Set<Taxon>>();
-					Set<RootedSplits> rSet = new HashSet<RootedSplits>(instSplits.get(Z));
-					for (RootedSplits rs : rSet) {
-						pZ.addAll(rs.getSplits());
-					}
-				}										
-				int costZ, min = Integer.MAX_VALUE;
-				Set<RootedSplitsCost> tempOptimals = new HashSet<RootedSplitsCost>();
-				while (pZ.size() > 0) {
-					Set<Taxon> X = new HashSet<Taxon>(pZ.iterator().next());
-					Set<Taxon> Y = new HashSet<Taxon>(Z);
-					Y.removeAll(X);
-					pZ.remove(X);
-					pZ.remove(Y);
-					int costX = 0, costY = 0;
-					if (subCost(X) != null) {
-						costX = subCost(X).iterator().next().getCost();
-					}
-					if (subCost(Y) != null) {
-						costY = subCost(Y).iterator().next().getCost();
-					}
-					costZ = costX + costY + auxCost(X, Y);				
-					if (costZ <= min) {
-						min = costZ;
-						RootedSplitsCost rsc = new RootedSplitsCost();
-						rsc.addSplit(X);
-						rsc.addSplit(Y);
-						rsc.setCost(costZ);
-						tempOptimals.add(rsc);					
-					}
-				}			
-				for (RootedSplitsCost rsc : tempOptimals) {
-					if (rsc.getCost() == min) {
-						subOptimals.get(Z).add(rsc);
-					}
+				if (subCost(Y) != null) {
+					costY = subCost(Y).iterator().next().getCost();
+				}
+				costZ = costX + costY + auxCost(X, Y);				
+				if (costZ <= min) {
+					min = costZ;
+					RootedSplitsCost rsc = new RootedSplitsCost();
+					rsc.addSplit(X);
+					rsc.addSplit(Y);
+					rsc.setCost(costZ);
+					tempOptimals.add(rsc);					
+				}
+			}			
+			for (RootedSplitsCost rsc : tempOptimals) {
+				if (rsc.getCost() == min) {
+					subOptimals.get(Z).add(rsc);
 				}
 			}
-			rtn = subOptimals.get(Z);
-		}		// else return null as equivalent to 0
+		}
+		rtn = subOptimals.get(Z);
+		// else return null as equivalent to 0
 		return rtn;
 	}
 
@@ -122,8 +110,7 @@ public abstract class GeneTreeParsimony {
 		}
 	}
 
-	public void runDynamicProgram(boolean coPareto) {
-		this.pareto = coPareto;
+	public void runDynamicProgram() {
 		minimal = subCost(leaves);
 		setSolutionClusters(leaves);		
 		solutionTree = new RootedTreeFromClusterSplits(solutionClusters, leaves);	
@@ -136,10 +123,10 @@ public abstract class GeneTreeParsimony {
 	public int getTotalCost() {
 		return minimal.iterator().next().getCost();
 	}
-	
+
 	public void showResults() {
 		System.out.println("==================== Solution Tree ====================");
-		System.out.println("Species gene tree cost: " + minimal.iterator().next().getCost());
+		System.out.println("Gene Tree Parsimony Cost: " + this.getTotalCost());
 		System.out.println(Utils.asText(solutionTree));
 	}
 }

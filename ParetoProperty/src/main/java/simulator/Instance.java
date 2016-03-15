@@ -17,7 +17,7 @@ import jebl.evolution.trees.TreeBuilderFactory.ConsensusMethod;
 import jebl.moon.MyUtils;
 
 public class Instance {
-	private double stripProb = 0.2;
+	private double leafProb = 0.8;
 	private RootedTree conTree;
 	private RootedTree[] comProfile, incomProfile;
 
@@ -42,7 +42,7 @@ public class Instance {
 		for (int i = 0; i < profSize; i++) {				
 			Set<Taxon> subTaxa = new HashSet<Taxon>();								
 			for (Taxon t : taxa) {
-				if (ThreadLocalRandom.current().nextDouble() > stripProb) {
+				if (ThreadLocalRandom.current().nextDouble() < leafProb) {
 					subTaxa.add(t);
 				}					
 			}				

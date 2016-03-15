@@ -88,10 +88,23 @@ public class MyUtils {
 	 * @param t2
 	 * @return check t1 <= t2
 	 */
-	public static boolean isDisplay(RootedTree t1, RootedTree t2) {
+	public static boolean isRefine(RootedTree t1, RootedTree t2) {
 		Set<Set<Taxon>> t1C = getAllClades(t1);
 		Set<Set<Taxon>> t2C = getAllClades(t2);
 		return t2C.containsAll(t1C) ? true : false;
+	}
+	
+	/**
+	 * 
+	 * @param t1
+	 * @param t2
+	 * @return check t1 = t2 | L(t1)
+	 */
+	public static boolean isDisplay(RootedTree t1, RootedTree t2) {
+		RootedTree t2l = new RootedSubtree(t2, t1.getTaxa());
+		Set<Set<Taxon>> t1C = getAllClades(t1);
+		Set<Set<Taxon>> t2C = getAllClades(t2l);
+		return t2C.equals(t1C) ? true : false;
 	}
 	
 	public static boolean isEqual(RootedTree t1, RootedTree t2) {
