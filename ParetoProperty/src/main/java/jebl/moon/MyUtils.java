@@ -23,6 +23,7 @@ import jebl.evolution.trees.RootedTree;
 import jebl.evolution.trees.RootedTreeUtils;
 import jebl.evolution.trees.TreeBuilderFactory;
 import jebl.evolution.trees.TreeBuilderFactory.ConsensusMethod;
+import jebl.evolution.trees.Utils;
 import jebl.evolution.treesimulation.CoalescentIntervalGenerator;
 import jebl.evolution.treesimulation.IntervalGenerator;
 import jebl.evolution.treesimulation.TreeSimulator;
@@ -93,7 +94,7 @@ public class MyUtils {
 		Set<Set<Taxon>> t2C = getAllClades(t2);
 		return t2C.containsAll(t1C) ? true : false;
 	}
-	
+
 	/**
 	 * 
 	 * @param t1
@@ -106,11 +107,11 @@ public class MyUtils {
 		Set<Set<Taxon>> t2C = getAllClades(t2l);
 		return t2C.equals(t1C) ? true : false;
 	}
-	
+
 	public static boolean isEqual(RootedTree t1, RootedTree t2) {
 		return getAllClades(t1).equals(getAllClades(t2));
 	}
-	
+
 	public static RootedTree getCutTree(RootedTree cTree, Node cNode, RootedTree sTree) throws MissingTaxonException {
 		if (cTree.isExternal(cNode)) {
 			return null;
@@ -152,7 +153,7 @@ public class MyUtils {
 		}
 		return max;
 	}
-	
+
 	public static Set<Set<Taxon>> getStrictConsensusClades(RootedTree[] trees) {
 		Set<Set<Taxon>> clades = new HashSet<Set<Taxon>>(getAllClades(trees[0]));
 		for (int i = 1; i < trees.length; i++) {
@@ -239,6 +240,45 @@ public class MyUtils {
 		return rtn;
 	}
 
+	public static Set<Node> getNodes(RootedTree t, Set<Taxon> taxa) {
+		Set<Node> rtn = new HashSet<Node>();
+		for (Taxon leaf : taxa) {
+			rtn.add(t.getNode(leaf));
+		}
+		return rtn;
+	}
+
+	public static int LossesCost(RootedTree gTree, RootedTree sTree) throws MissingTaxonException {
+		int cost = 0;
+		RootedTree sTree1 = new RootedSubtreeFromNodes(sTree, getNodes(sTree, gTree.getTaxa()));
+		for (Node pa : gTree.getInternalNodes()) {			
+			Node paMap = LCAMapping(gTree, pa, sTree1);
+			boolean isZero = true;
+			for (Node ch : gTree.getChildren(pa)) {
+				Node chMap = LCAMapping(gTree, ch, sTree1);
+				if (!paMap.equals(chMap)) {
+					isZero = false;
+					break;
+				}
+			}
+			if (!isZero) {
+				for (Node ch : gTree.getChildren(pa)) {
+					Node chMap = LCAMapping(gTree, ch, sTree1);
+					cost += Math.abs(MyUtils.getPathLength(sTree1, chMap, paMap) - 1);
+				}
+			}
+		}
+		return cost;
+	}
+
+	public static int LossesCost(RootedTree[] gTrees, RootedTree sTree) throws MissingTaxonException {
+		int rtn = 0;
+		for (RootedTree gTree : gTrees) {
+			rtn += LossesCost(gTree, sTree);
+		}
+		return rtn;
+	}
+
 	public static List<Node> getPath(RootedTree tree, Node des, Node ans) {
 		List<Node> path = new LinkedList<Node>();
 		Node tmp = des;
@@ -250,6 +290,10 @@ public class MyUtils {
 		path.add(tmp);
 		if (tmp == null) return null;
 		else return path;
+	}
+
+	public static int getPathLength(RootedTree tree, Node des, Node ans) {
+		return getPath(tree, des, ans).size() - 1;
 	}
 
 	public static Node getCommonAncestorNodeTaxa(RootedTree T, Set<Taxon> A) throws MissingTaxonException {
