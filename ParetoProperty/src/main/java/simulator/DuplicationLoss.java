@@ -26,7 +26,7 @@ public class DuplicationLoss extends GeneTreeParsimony {
 					boolean c2 = (SetOps.Cross(q.getSplit(i + 1), X1).size() > 0) 
 							&& (SetOps.Cross(q.getSplit(i + 1), X2).size() > 0);
 					if (!c1 || c2) {
-						cost += instSplitCount.get(q);
+						cost += instSplitCount.get(q);						
 						abort = true;
 					}
 				}

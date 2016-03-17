@@ -37,22 +37,32 @@ public class RootedSplits {
 		}
 		return rtn;
 	}
-	
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((splits == null) ? 0 : splits.hashCode());
+		return result;
+	}
 
-		RootedSplits so = (RootedSplits) o;
-
-		if (!splits.equals(so.splits)) return false;
-
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		RootedSplits other = (RootedSplits) obj;
+		if (splits == null) {
+			if (other.splits != null)
+				return false;
+		} else if (!splits.equals(other.splits))
+			return false;
 		return true;
 	}
-	
-	public int hashCode() {
-		return splits.hashCode();
-	}
-	
+
 	public static void main(String[] args) throws Exception {
 		RootedSplits A = new RootedSplits();
 		RootedSplits B = new RootedSplits();

@@ -1,6 +1,7 @@
 package jebl.moon;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -279,21 +280,43 @@ public class MyUtils {
 		return rtn;
 	}
 
-	public static List<Node> getPath(RootedTree tree, Node des, Node ans) {
-		List<Node> path = new LinkedList<Node>();
-		Node tmp = des;
-		while (!tmp.equals(ans)) {
-			path.add(tmp);
+	public static List<Node> getPath(RootedTree tree, Node from, Node to) {
+		List<Node> path = null;
+		List<Node> FtoRoot = new LinkedList<Node>();
+		List<Node> TtoRoot = new LinkedList<Node>();
+		Node tmp = from;
+		while (tmp != null) {
+			FtoRoot.add(0, tmp);
 			tmp = tree.getParent(tmp);
-			if (tmp == null) break;
 		}
-		path.add(tmp);
-		if (tmp == null) return null;
-		else return path;
+		tmp = to;
+		while (tmp != null) {
+			TtoRoot.add(0, tmp);
+			tmp = tree.getParent(tmp);
+		}
+		Node lca = null;
+		int lcaPos = 0;
+		while (lcaPos < FtoRoot.size() && lcaPos < TtoRoot.size() && FtoRoot.get(lcaPos).equals(TtoRoot.get(lcaPos))) {
+			lca = FtoRoot.get(lcaPos++);
+		}		
+		lcaPos--;
+		if (lca.equals(to)) {
+			path = FtoRoot.subList(lcaPos, FtoRoot.size());
+			Collections.reverse(path);
+		}
+		else if (lca.equals(from)) {
+			path = TtoRoot.subList(lcaPos, TtoRoot.size());
+		}
+		else {
+			path = FtoRoot.subList(lcaPos, FtoRoot.size());
+			Collections.reverse(path);
+			path.addAll(TtoRoot.subList(lcaPos + 1, TtoRoot.size()));
+		}
+		return path;
 	}
 
-	public static int getPathLength(RootedTree tree, Node des, Node ans) {
-		return getPath(tree, des, ans).size() - 1;
+	public static int getPathLength(RootedTree tree, Node from, Node to) {
+		return getPath(tree, from, to).size() - 1;
 	}
 
 	public static Node getCommonAncestorNodeTaxa(RootedTree T, Set<Taxon> A) throws MissingTaxonException {

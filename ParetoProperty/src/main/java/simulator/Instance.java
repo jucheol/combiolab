@@ -33,7 +33,7 @@ public class Instance {
 			@SuppressWarnings("unchecked")
 			ConsensusTreeBuilder<RootedTree> builder = TreeBuilderFactory.buildRooted(comProfile, 1.0, ConsensusMethod.GREEDY);
 			conTree = builder.build();			
-			if (conTree.getInternalNodes().size() < (int) (Math.pow(branch, depth) - 1) / (branch - 1)) {
+			if (conTree.getInternalNodes().size() != (int) (Math.pow(branch, depth) - 1) / (branch - 1)) {
 				reWork = true;					
 			}				
 		} while (reWork);
