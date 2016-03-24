@@ -58,6 +58,10 @@ public class Instance {
 		return incomProfile;
 	}
 	
+	public RootedTree[] getComProfile() {
+		return comProfile;
+	}
+	
 	public void showInstance() throws MissingTaxonException {
 		System.out.println("==================== Incompelete Profile ====================");
 		for (RootedTree tree : incomProfile) System.out.println(Utils.asText(tree));		

@@ -46,7 +46,7 @@ public class DuplicationLoss extends GeneTreeParsimony {
 	public static void main(String[] args) throws MissingTaxonException {
 		Instance inst = new Instance(2, 3, 2);
 		inst.showInstance();
-		DuplicationLoss solver = new DuplicationLoss(inst.getIncomProfile());
+		DuplicationLoss solver = new DuplicationLoss(inst.getComProfile());
 		solver.runDynamicProgram();
 		solver.showResults();
 		System.out.println("Actual cost: " + (MyUtils.LossesCost(inst.getIncomProfile(), solver.getSolution())
