@@ -254,15 +254,15 @@ public class MyUtils {
 		RootedTree sTree1 = new RootedSubtreeFromNodes(sTree, getNodes(sTree, gTree.getTaxa()));
 		for (Node pa : gTree.getInternalNodes()) {			
 			Node paMap = LCAMapping(gTree, pa, sTree1);
-			boolean isZero = true;
+			boolean isSkip = false;
 			for (Node ch : gTree.getChildren(pa)) {
 				Node chMap = LCAMapping(gTree, ch, sTree1);
-				if (!paMap.equals(chMap)) {
-					isZero = false;
+				if (paMap.equals(chMap)) {
+					isSkip = true;
 					break;
 				}
 			}
-			if (!isZero) {
+			if (!isSkip) {
 				for (Node ch : gTree.getChildren(pa)) {
 					Node chMap = LCAMapping(gTree, ch, sTree1);
 					cost += Math.abs(MyUtils.getPathLength(sTree1, chMap, paMap) - 1);

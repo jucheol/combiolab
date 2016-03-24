@@ -63,8 +63,8 @@ public class Instance {
 	}
 	
 	public void showInstance() throws MissingTaxonException {
-		System.out.println("==================== Incompelete Profile ====================");
-		for (RootedTree tree : incomProfile) System.out.println(Utils.asText(tree));		
+		System.out.println("==================== Compelete Profile ====================");
+		for (RootedTree tree : comProfile) System.out.println(Utils.asText(tree));		
 		System.out.println("==================== Given Consensus Tree ====================");
 		System.out.println(Utils.asText(conTree));
 	}

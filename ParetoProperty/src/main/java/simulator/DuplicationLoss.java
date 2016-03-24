@@ -44,13 +44,13 @@ public class DuplicationLoss extends GeneTreeParsimony {
 	}
 
 	public static void main(String[] args) throws MissingTaxonException {
-		Instance inst = new Instance(2, 4, 20);
+		Instance inst = new Instance(2, 3, 2);
 		inst.showInstance();
 		DuplicationLoss solver = new DuplicationLoss(inst.getComProfile());
 		solver.runDynamicProgram();
 		solver.showResults();
-		System.out.println("Actual cost: " + (MyUtils.LossesCost(inst.getIncomProfile(), solver.getSolution())
-			+ MyUtils.GeneDuplicationCost(inst.getIncomProfile(), solver.getSolution())));
+		System.out.println("Actual cost: " + (MyUtils.LossesCost(inst.getComProfile(), solver.getSolution())
+			+ MyUtils.GeneDuplicationCost(inst.getComProfile(), solver.getSolution())));
 		System.out.println("Pareto solution: " + MyUtils.isRefine(inst.getConsensusTree(), solver.getSolution()));
 	}
 }
