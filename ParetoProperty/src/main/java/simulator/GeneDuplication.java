@@ -35,7 +35,7 @@ public class GeneDuplication extends GeneTreeParsimony {
 		inst.showInstance();
 		GeneDuplication solver = new GeneDuplication(inst.getIncomProfile());
 		solver.runDynamicProgram();
-		solver.showResults();
+		solver.showResults(false);
 		System.out.println("Actual cost: " + MyUtils.GeneDuplicationCost(inst.getIncomProfile(), solver.getSolution()));
 		System.out.println("Pareto solution: " + MyUtils.isRefine(inst.getConsensusTree(), solver.getSolution()));
 	}

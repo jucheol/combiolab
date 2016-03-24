@@ -48,8 +48,8 @@ public class DuplicationLoss extends GeneTreeParsimony {
 		inst.showInstance();
 		DuplicationLoss solver = new DuplicationLoss(inst.getComProfile());
 		solver.runDynamicProgram();
-		solver.showResults();
-		System.out.println("Actual cost: " + (MyUtils.LossesCost(inst.getComProfile(), solver.getSolution())
+		solver.showResults(true);
+		System.out.println("Actual cost: " + (MyUtils.LossCost(inst.getComProfile(), solver.getSolution())
 			+ MyUtils.GeneDuplicationCost(inst.getComProfile(), solver.getSolution())));
 		System.out.println("Pareto solution: " + MyUtils.isRefine(inst.getConsensusTree(), solver.getSolution()));
 	}

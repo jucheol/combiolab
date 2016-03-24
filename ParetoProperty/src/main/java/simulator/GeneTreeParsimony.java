@@ -17,6 +17,7 @@ import jebl.moon.RootedTreeFromClusterSplits;
 import jebl.moon.SetOps;
 
 public abstract class GeneTreeParsimony {
+	private int offset;
 	private Set<RootedSplitsCost> minimal;
 	private Set<Taxon> leaves;
 	private RootedTree solutionTree;
@@ -42,11 +43,13 @@ public abstract class GeneTreeParsimony {
 				pZ.remove(X);
 				pZ.remove(Y);
 				int costX = 0, costY = 0;
-				if (subCost(X) != null) {
-					costX = subCost(X).iterator().next().getCost();
-				}
-				if (subCost(Y) != null) {
-					costY = subCost(Y).iterator().next().getCost();
+				Set<RootedSplitsCost> subX = subCost(X);
+				if (subX != null) {
+					costX = subX.iterator().next().getCost();
+				}				
+				Set<RootedSplitsCost> subY = subCost(Y);
+				if (subY != null) {
+					costY = subY.iterator().next().getCost();
 				}
 				costZ = costX + costY + auxCost(X, Y);				
 				if (costZ <= min) {
@@ -63,7 +66,7 @@ public abstract class GeneTreeParsimony {
 					subOptimals.get(Z).add(rsc);
 				}
 			}
-		}
+		}		
 		rtn = subOptimals.get(Z);
 		// else return null as equivalent to 0
 		return rtn;
@@ -75,9 +78,29 @@ public abstract class GeneTreeParsimony {
 		instSplits = new HashMap<Set<Taxon>, Set<RootedSplits>>();
 		subOptimals = new HashMap<Set<Taxon>, Set<RootedSplitsCost>>();
 		solutionClusters = new HashMap<Set<Taxon>, RootedSplits>();
+		offset = 0;
 		for (RootedTree tree : instances) {
 			leaves.addAll(tree.getTaxa());
-			addRootedSplits(tree);
+			this.addRootedSplits(tree);
+			this.setOffSet(tree);
+		}		
+	}
+	
+	private void setOffSet(RootedTree tree) {		
+		offset += this.setOffSet(tree, tree.getRootNode());		
+	}
+	
+	private int setOffSet(RootedTree tree, Node pa) {
+		if (tree.isExternal(pa)) {
+			offset += 1;
+			return 1;
+		}
+		else {
+			Node ch1 = tree.getChildren(pa).get(0);
+			Node ch2 = tree.getChildren(pa).get(1);
+			int value = this.setOffSet(tree, ch1) + this.setOffSet(tree, ch2);
+			offset += value;
+			return value; 
 		}
 	}
 
@@ -124,9 +147,9 @@ public abstract class GeneTreeParsimony {
 		return minimal.iterator().next().getCost();
 	}
 
-	public void showResults() {
+	public void showResults(boolean isOffSet) {		
 		System.out.println("==================== Solution Tree ====================");
-		System.out.println("Gene Tree Parsimony Cost: " + this.getTotalCost());
+		System.out.println("Gene Tree Parsimony Cost: " + (this.getTotalCost() - (isOffSet ? offset : 0)));
 		System.out.println(Utils.asText(solutionTree));
 	}
 }
