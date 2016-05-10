@@ -17,6 +17,7 @@ import jebl.evolution.graphs.Edge;
 import jebl.evolution.graphs.Node;
 import jebl.evolution.taxa.MissingTaxonException;
 import jebl.evolution.taxa.Taxon;
+import jebl.evolution.treemetrics.RobinsonsFouldMetric;
 import jebl.evolution.trees.CladeSystem;
 import jebl.evolution.trees.ConsensusTreeBuilder;
 import jebl.evolution.trees.RootedSubtree;
@@ -57,7 +58,7 @@ public class MyUtils {
 		}
 		return rtn;
 	}
-
+	
 	public static RootedTree mergeSubSolutions(Map<Set<Taxon>, RootedTree> subSolutions) {		
 		int max = 0;
 		Set<Taxon> rootKey = null;
@@ -240,6 +241,15 @@ public class MyUtils {
 		return rtn;
 	}
 
+	public static int getRFCost(RootedTree[] gTrees, RootedTree sTree) throws MissingTaxonException {
+		int cost = 0;
+		RobinsonsFouldMetric rf = new RobinsonsFouldMetric();
+		for (RootedTree gTree : gTrees) {			
+			cost += 2 * rf.getMetric(gTree, sTree);
+		}		
+		return cost;
+	}
+	
 	public static Set<Node> getNodes(RootedTree t, Set<Taxon> taxa) {
 		Set<Node> rtn = new HashSet<Node>();
 		for (Taxon leaf : taxa) {
